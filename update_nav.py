@@ -56,7 +56,7 @@ def latest_navs(wanted):
         try:
             navs = parse_amfi(fetch(url))
             if all(k in navs for k in wanted):
-                print("Source:", url)
+                print("::notice::NAV source:", url)
                 return navs
             print("Missing holdings in", url)
         except Exception as exc:  # noqa: BLE001
@@ -64,7 +64,7 @@ def latest_navs(wanted):
     try:
         navs = parse_fallback(fetch(FALLBACK_CSV))
         if all(k in navs for k in wanted):
-            print("Source (fallback):", FALLBACK_CSV)
+            print("::notice::NAV source (fallback copy of AMFI data):", FALLBACK_CSV)
             return navs
     except Exception as exc:  # noqa: BLE001
         print("Could not read fallback -", exc)
@@ -77,21 +77,21 @@ def main(path="data.json"):
     wanted = [(h["amfiCode"], h["isin"]) for h in data["holdings"]]
     navs = latest_navs(wanted)
     if navs is None:
-        print("No NAV source could be read; nothing changed.")
+        print("::error::No NAV source could be read; nothing changed.")
         return 1
     changed = False
     for h in data["holdings"]:
         nav, date = navs[(h["amfiCode"], h["isin"])]
         current = datetime.strptime(h["navDate"], DATE_FMT)
         if date <= current:
-            print(f'{h["name"]}: no newer NAV (AMFI {date:%d-%b-%Y}).')
+            print(f'::notice::{h["name"]}: no newer NAV (source has {nav} as of {date:%d-%b-%Y}).')
             continue
         if abs(nav - h["nav"]) / h["nav"] > 0.10:
-            print(f'{h["name"]}: NAV {nav} moves more than 10% from {h["nav"]}; skipped.')
+            print(f'::warning::{h["name"]}: NAV {nav} moves more than 10% from {h["nav"]}; skipped.')
             continue
         h["nav"], h["navDate"] = nav, date.strftime(DATE_FMT)
         changed = True
-        print(f'{h["name"]}: updated to {nav} as of {h["navDate"]}; value {h["units"] * nav:,.2f}')
+        print(f'::notice::{h["name"]}: updated to {nav} as of {h["navDate"]}; value {h["units"] * nav:,.2f}')
     if changed:
         ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
         data["updatedOn"] = ist.strftime(DATE_FMT)
