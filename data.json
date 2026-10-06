@@ -1,0 +1,25 @@
+{
+  "updatedOn": "06-Oct-2026",
+  "holdings": [
+    {
+      "amfiCode": "SIF-7",
+      "isin": "INF966L30084",
+      "amc": "A quant Mutual Fund product",
+      "name": "qsif Hybrid Long-Short Fund",
+      "plan": "Regular Plan · Growth Option",
+      "units": 78325.474,
+      "nav": 12.7666,
+      "navDate": "05-Oct-2026"
+    },
+    {
+      "amfiCode": "SIF-11",
+      "isin": "INF754K30052",
+      "amc": "An Edelweiss Mutual Fund product",
+      "name": "Altiva Hybrid Long-Short Fund",
+      "plan": "Regular Plan · Growth Option",
+      "units": 91441.557,
+      "nav": 10.9354,
+      "navDate": "05-Oct-2026"
+    }
+  ]
+}
