@@ -1,20 +1,26 @@
-"""Update data.json with the latest NAVs from AMFI's official SIF NAV file.
+"""Update every client data.json with the latest NAVs from AMFI.
 
+Covers the original page (data.json, a flat "holdings" list) and every client
+page under p/<id>/data.json (a list of "investors", each with "holdings").
+
+Sources: AMFI's mutual fund NAV file (NAVAll.txt) and SIF NAV files.
 Rules: match each holding by AMFI scheme code AND ISIN; update only when AMFI
 shows a later NAV date; skip any move larger than 10%.
 """
 import csv
+import glob
 import io
 import json
 import sys
 import urllib.request
 from datetime import datetime, timedelta, timezone
 
-AMFI_URLS = [
-    "https://portal.amfiindia.com/spages/SIF_NAVInterval.txt",
+MF_URL = "https://portal.amfiindia.com/spages/NAVAll.txt"
+SIF_URLS = [
     "https://portal.amfiindia.com/spages/SIF_NAVAll.txt",
+    "https://portal.amfiindia.com/spages/SIF_NAVInterval.txt",
 ]
-FALLBACK_CSV = "https://sif.tigzig.com/sif_meta.csv"  # third-party copy of AMFI data
+SIF_FALLBACK_CSV = "https://sif.tigzig.com/sif_meta.csv"  # third-party copy of AMFI SIF data
 DATE_FMT = "%d-%b-%Y"
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                     "(KHTML, like Gecko) Chrome/126.0 Safari/537.36"}
@@ -22,25 +28,31 @@ UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.3
 
 def fetch(url):
     req = urllib.request.Request(url, headers=UA)
-    with urllib.request.urlopen(req, timeout=60) as resp:
+    with urllib.request.urlopen(req, timeout=90) as resp:
         return resp.read().decode("utf-8", errors="replace")
 
 
 def parse_amfi(text):
-    """Return {(code, isin): (nav, date)} from AMFI's semicolon-separated file."""
+    """Return {(code, isin): (nav, date)} from an AMFI semicolon-separated file."""
     out = {}
     for line in text.splitlines():
         parts = [p.strip() for p in line.split(";")]
-        if len(parts) != 8 or not parts[0].startswith("SIF-"):
+        if len(parts) != 8:
+            continue
+        code = parts[0]
+        if not (code.isdigit() or code.startswith("SIF-")):
             continue
         try:
-            out[(parts[0], parts[1])] = (float(parts[6]), datetime.strptime(parts[7], DATE_FMT))
+            nav, date = float(parts[6]), datetime.strptime(parts[7], DATE_FMT)
         except ValueError:
             continue
+        for isin in (parts[1], parts[2]):
+            if isin and isin != "-":
+                out[(code, isin)] = (nav, date)
     return out
 
 
-def parse_fallback(text):
+def parse_sif_fallback(text):
     out = {}
     for row in csv.DictReader(io.StringIO(text)):
         try:
@@ -51,53 +63,68 @@ def parse_fallback(text):
     return out
 
 
-def latest_navs(wanted):
-    for url in AMFI_URLS:
+def load_navs():
+    navs = {}
+    for url in [MF_URL] + SIF_URLS:
         try:
-            navs = parse_amfi(fetch(url))
-            if all(k in navs for k in wanted):
-                print("::notice::NAV source:", url)
-                return navs
-            print("Missing holdings in", url)
+            got = parse_amfi(fetch(url))
+            print(f"::notice::Read {len(got)} NAVs from {url}")
+            for k, v in got.items():
+                if k not in navs or v[1] > navs[k][1]:
+                    navs[k] = v
         except Exception as exc:  # noqa: BLE001
             print("Could not read", url, "-", exc)
     try:
-        navs = parse_fallback(fetch(FALLBACK_CSV))
-        if all(k in navs for k in wanted):
-            print("::notice::NAV source (fallback copy of AMFI data):", FALLBACK_CSV)
-            return navs
+        for k, v in parse_sif_fallback(fetch(SIF_FALLBACK_CSV)).items():
+            navs.setdefault(k, v)
     except Exception as exc:  # noqa: BLE001
-        print("Could not read fallback -", exc)
-    return None
+        print("Could not read SIF fallback -", exc)
+    return navs
 
 
-def main(path="data.json"):
+def holdings_of(data):
+    if "holdings" in data:
+        yield from data["holdings"]
+    for inv in data.get("investors", []):
+        yield from inv["holdings"]
+
+
+def update_file(path, navs):
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
-    wanted = [(h["amfiCode"], h["isin"]) for h in data["holdings"]]
-    navs = latest_navs(wanted)
-    if navs is None:
-        print("::error::No NAV source could be read; nothing changed.")
-        return 1
     changed = False
-    for h in data["holdings"]:
-        nav, date = navs[(h["amfiCode"], h["isin"])]
+    for h in holdings_of(data):
+        key = (h["amfiCode"], h["isin"])
+        if key not in navs:
+            print(f'::warning::{path}: {h["name"]} ({key}) not found in any NAV source.')
+            continue
+        nav, date = navs[key]
         current = datetime.strptime(h["navDate"], DATE_FMT)
         if date <= current:
-            print(f'::notice::{h["name"]}: no newer NAV (source has {nav} as of {date:%d-%b-%Y}).')
             continue
         if abs(nav - h["nav"]) / h["nav"] > 0.10:
-            print(f'::warning::{h["name"]}: NAV {nav} moves more than 10% from {h["nav"]}; skipped.')
+            print(f'::warning::{path}: {h["name"]} NAV {nav} moves more than 10% from {h["nav"]}; skipped.')
             continue
         h["nav"], h["navDate"] = nav, date.strftime(DATE_FMT)
         changed = True
-        print(f'::notice::{h["name"]}: updated to {nav} as of {h["navDate"]}; value {h["units"] * nav:,.2f}')
+        print(f'::notice::{path}: {h["name"]} -> {nav} as of {h["navDate"]}')
     if changed:
         ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
         data["updatedOn"] = ist.strftime(DATE_FMT)
         with open(path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
             f.write("\n")
+    return changed
+
+
+def main(*paths):
+    paths = list(paths) or ["data.json"] + sorted(glob.glob("p/*/data.json"))
+    navs = load_navs()
+    if not navs:
+        print("::error::No NAV source could be read; nothing changed.")
+        return 1
+    for p in paths:
+        update_file(p, navs)
     return 0
 
 

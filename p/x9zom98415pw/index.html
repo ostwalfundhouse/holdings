@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Family Portfolio</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #eef2f1; --surface: #ffffff; --fg: #12211e; --muted: #5a6b67; --line: #d3dcda;
+  --accent: #0b6b57; --gain: #0b6b57; --loss: #b4462f; --chip: #e3ebe9;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1614; --surface: #15221f; --fg: #e6efec; --muted: #93a6a1; --line: #293935;
+    --accent: #5fd0b3; --gain: #5fd0b3; --loss: #f08a72; --chip: #1e2f2b; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1614; --surface: #15221f; --fg: #e6efec; --muted: #93a6a1; --line: #293935;
+  --accent: #5fd0b3; --gain: #5fd0b3; --loss: #f08a72; --chip: #1e2f2b; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-display);
+  font-size: 16px; line-height: 1.5; padding: 40px 16px; }
+.sheet { max-width: 720px; margin-inline: auto; display: flex; flex-direction: column; gap: 28px; }
+.label { font-size: 12px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+h1 { font-size: clamp(22px, 5vw, 28px); font-weight: 600; line-height: 1.2; margin: 6px 0 0; }
+.num { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; }
+.value { font-family: var(--font-data); font-weight: 500; color: var(--accent);
+  font-size: clamp(30px, 9vw, 50px); line-height: 1.1; font-variant-numeric: tabular-nums; margin-top: 6px; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 20px;
+  padding-top: 16px; border-top: 1px solid var(--line); }
+.stats div { min-width: 0; }
+.stats .num { display: block; font-size: 15px; overflow-wrap: anywhere; }
+.gain { color: var(--gain); } .loss { color: var(--loss); }
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.tabs button { font: inherit; font-size: 14px; border: 1px solid var(--line); background: var(--surface);
+  color: var(--fg); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.person { display: flex; flex-direction: column; gap: 14px; }
+.person-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.person-head h2 { font-size: 20px; margin: 0; font-weight: 600; }
+.group-title { margin: 8px 0 0; }
+.fund { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px;
+  display: flex; flex-direction: column; gap: 10px; }
+.fund-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.fund h3 { font-size: 16px; font-weight: 600; margin: 0; line-height: 1.3; }
+.meta { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.fund-val { text-align: right; flex-shrink: 0; }
+.fund-val .num { display: block; font-size: 16px; font-weight: 500; }
+.fund-val small { font-family: var(--font-data); font-size: 13px; }
+.fund-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;
+  padding-top: 10px; border-top: 1px solid var(--line); font-size: 13px; }
+.fund-grid span { display: block; color: var(--muted); }
+.fund-grid .num { color: var(--fg); font-size: 13px; overflow-wrap: anywhere; }
+.notes { font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+.notes p { margin: 0; max-width: 70ch; }
+@media (max-width: 480px) {
+  .card { padding: 20px 18px; }
+  .stats, .fund-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fund-top { flex-direction: column; } .fund-val { text-align: left; }
+}
+</style>
+</head>
+<body>
+<main class="sheet">
+  <header>
+    <div class="label">Ostwal Fund House</div>
+    <h1 id="title">Family portfolio</h1>
+  </header>
+
+  <section class="card" aria-label="Portfolio summary">
+    <div class="label" id="sum-label">Total current value</div>
+    <div class="value" id="grand">—</div>
+    <div class="stats">
+      <div><div class="label">Invested</div><span class="num" id="inv">—</span></div>
+      <div><div class="label">Gain / loss</div><span class="num" id="gl">—</span></div>
+      <div><div class="label">Return</div><span class="num" id="ret">—</span></div>
+    </div>
+  </section>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Investor"></nav>
+  <div id="people"></div>
+
+  <footer class="notes">
+    <p id="asof"></p>
+    <p>Current value is units held × the latest NAV published by AMFI. NAVs refresh automatically every day. Invested is the net amount put in; transfers between funds (STP) move money from one fund to another and are not counted twice.</p>
+    <p>For your records, please refer to the account statements from the fund houses (CAMS / KFintech).</p>
+  </footer>
+</main>
+<script>
+var inr = function (n, dp) { return n.toLocaleString("en-IN", { minimumFractionDigits: dp, maximumFractionDigits: dp }); };
+var rs = function (n) { return (n < 0 ? "−₹" : "₹") + inr(Math.abs(n), 0); };
+var el = function (tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+var signed = function (node, n, txt) { node.textContent = (n > 0 ? "+" : "") + txt; node.className = "num " + (n >= 0 ? "gain" : "loss"); };
+var pct = function (g, i) { return i ? g / i * 100 : 0; };
+
+fetch("data.json?t=" + Date.now(), { cache: "no-store" })
+  .then(function (r) { return r.json(); })
+  .then(function (d) {
+    document.getElementById("title").textContent = d.title || "Family portfolio";
+    var totals = function (hs) {
+      var v = 0, i = 0;
+      hs.forEach(function (h) { v += h.units * h.nav; i += h.invested; });
+      return { v: v, i: i, g: v - i };
+    };
+    var all = [];
+    d.investors.forEach(function (p) { all = all.concat(p.holdings); });
+    var views = [{ name: "All", holdings: all }].concat(d.investors);
+
+    var setSummary = function (hs, label) {
+      var t = totals(hs);
+      document.getElementById("sum-label").textContent = label;
+      document.getElementById("grand").textContent = "₹" + inr(t.v, 2);
+      document.getElementById("inv").textContent = rs(t.i);
+      signed(document.getElementById("gl"), t.g, rs(t.g));
+      signed(document.getElementById("ret"), t.g, inr(pct(t.g, t.i), 2) + "%");
+    };
+
+    var fundCard = function (h) {
+      var v = h.units * h.nav, g = v - h.invested;
+      var c = el("article", "fund");
+      var top = el("div", "fund-top"), left = el("div");
+      left.appendChild(el("div", "label", h.amc));
+      left.appendChild(el("h3", "", h.name));
+      left.appendChild(el("div", "meta", h.category + " · " + h.plan + " · Folio " + h.folio));
+      var right = el("div", "fund-val");
+      right.appendChild(el("span", "num", "₹" + inr(v, 2)));
+      var s = el("small"); signed(s, g, rs(g) + " (" + inr(pct(g, h.invested), 2) + "%)");
+      right.appendChild(s);
+      top.appendChild(left); top.appendChild(right); c.appendChild(top);
+      var grid = el("div", "fund-grid");
+      [["Invested", rs(h.invested)], ["Units", inr(h.units, 3)], ["NAV · " + h.navDate, "₹" + inr(h.nav, 4)]].forEach(function (x) {
+        var cell = el("div"); cell.appendChild(el("span", "", x[0])); cell.appendChild(el("span", "num", x[1])); grid.appendChild(cell);
+      });
+      c.appendChild(grid);
+      return c;
+    };
+
+    var people = document.getElementById("people"), tabs = document.getElementById("tabs");
+    var render = function (idx) {
+      var view = views[idx];
+      Array.prototype.forEach.call(tabs.children, function (b, i) { b.setAttribute("aria-selected", i === idx ? "true" : "false"); });
+      setSummary(view.holdings, idx === 0 ? "Total current value · all members" : "Current value · " + view.name);
+      people.innerHTML = "";
+      var list = idx === 0 ? d.investors : [view];
+      list.forEach(function (p) {
+        var sec = el("section", "person");
+        if (idx === 0) {
+          var head = el("div", "person-head"), t = totals(p.holdings);
+          head.appendChild(el("h2", "", p.name));
+          head.appendChild(el("span", "num", "₹" + inr(t.v, 0)));
+          sec.appendChild(head);
+        }
+        [["Mutual Fund", "Mutual funds"], ["SIF", "Specialized Investment Funds (SIF)"]].forEach(function (g) {
+          var hs = p.holdings.filter(function (h) { return h.type === g[0]; });
+          if (!hs.length) return;
+          hs.sort(function (a, b) { return b.units * b.nav - a.units * a.nav; });
+          sec.appendChild(el("div", "label group-title", g[1] + " · ₹" + inr(totals(hs).v, 0)));
+          hs.forEach(function (h) { sec.appendChild(fundCard(h)); });
+        });
+        people.appendChild(sec);
+      });
+    };
+    views.forEach(function (v, i) {
+      var b = el("button", "", v.name); b.type = "button"; b.setAttribute("role", "tab");
+      b.addEventListener("click", function () { render(i); });
+      tabs.appendChild(b);
+    });
+    render(0);
+    document.getElementById("asof").textContent = "Units as on " + d.unitsAsOn + " · NAVs last updated " + d.updatedOn + ".";
+  })
+  .catch(function () {
+    document.getElementById("grand").textContent = "Unavailable";
+    document.getElementById("asof").textContent = "The portfolio data could not be loaded. Please refresh the page.";
+  });
+</script>
+</body>
+</html>
