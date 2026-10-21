@@ -1,5 +1,5 @@
 {
-  "updatedOn": "21-Oct-2026",
+  "updatedOn": "22-Oct-2026",
   "unitsAsOn": "16-Oct-2026",
   "title": "Family portfolio",
   "investors": [
@@ -87,8 +87,8 @@
           "folio": "XXXX6056",
           "units": 1720.528,
           "invested": 25000,
-          "nav": 14.2502,
-          "navDate": "19-Oct-2026"
+          "nav": 13.9387,
+          "navDate": "21-Oct-2026"
         },
         {
           "amfiCode": "150579",
@@ -115,8 +115,8 @@
           "folio": "XXXX6096",
           "units": 1508.803,
           "invested": 50000,
-          "nav": 31.6466,
-          "navDate": "19-Oct-2026"
+          "nav": 30.788,
+          "navDate": "21-Oct-2026"
         },
         {
           "amfiCode": "100177",
@@ -129,8 +129,8 @@
           "folio": "XXXX1894",
           "units": 85.791,
           "invested": 25000,
-          "nav": 283.6945,
-          "navDate": "19-Oct-2026"
+          "nav": 278.7489,
+          "navDate": "21-Oct-2026"
         },
         {
           "amfiCode": "SIF-11",
@@ -143,8 +143,8 @@
           "folio": "XXXX0085",
           "units": 181320.393,
           "invested": 2000000,
-          "nav": 10.936,
-          "navDate": "19-Oct-2026"
+          "nav": 10.8665,
+          "navDate": "21-Oct-2026"
         },
         {
           "amfiCode": "SIF-122",
@@ -157,8 +157,8 @@
           "folio": "XXXX0085",
           "units": 90359.105,
           "invested": 1000000,
-          "nav": 10.4534,
-          "navDate": "19-Oct-2026"
+          "nav": 10.2239,
+          "navDate": "21-Oct-2026"
         }
       ]
     },
@@ -204,8 +204,8 @@
           "folio": "XXXX2974",
           "units": 76302.356,
           "invested": 1000000,
-          "nav": 12.7223,
-          "navDate": "19-Oct-2026"
+          "nav": 12.5817,
+          "navDate": "21-Oct-2026"
         },
         {
           "amfiCode": "SIF-11",
@@ -218,8 +218,8 @@
           "folio": "XXXX0894",
           "units": 181232.442,
           "invested": 2000000,
-          "nav": 10.936,
-          "navDate": "19-Oct-2026"
+          "nav": 10.8665,
+          "navDate": "21-Oct-2026"
         }
       ]
     }
