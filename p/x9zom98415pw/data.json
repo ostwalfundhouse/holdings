@@ -1,5 +1,5 @@
 {
-  "updatedOn": "09-Nov-2026",
+  "updatedOn": "10-Nov-2026",
   "unitsAsOn": "16-Oct-2026",
   "title": "Family portfolio",
   "investors": [
@@ -87,8 +87,8 @@
           "folio": "XXXX6056",
           "units": 1720.528,
           "invested": 25000,
-          "nav": 13.9564,
-          "navDate": "06-Nov-2026"
+          "nav": 14.0264,
+          "navDate": "09-Nov-2026"
         },
         {
           "amfiCode": "150579",
@@ -101,8 +101,8 @@
           "folio": "XXXX6096",
           "units": 739.52,
           "invested": 25000,
-          "nav": 28.918,
-          "navDate": "06-Nov-2026"
+          "nav": 29.179,
+          "navDate": "09-Nov-2026"
         },
         {
           "amfiCode": "142383",
@@ -115,8 +115,8 @@
           "folio": "XXXX6096",
           "units": 1508.803,
           "invested": 50000,
-          "nav": 32.4345,
-          "navDate": "06-Nov-2026"
+          "nav": 32.8325,
+          "navDate": "09-Nov-2026"
         },
         {
           "amfiCode": "100177",
@@ -129,8 +129,8 @@
           "folio": "XXXX1894",
           "units": 85.791,
           "invested": 25000,
-          "nav": 280.2563,
-          "navDate": "06-Nov-2026"
+          "nav": 282.7207,
+          "navDate": "09-Nov-2026"
         },
         {
           "amfiCode": "SIF-11",
@@ -143,8 +143,8 @@
           "folio": "XXXX0085",
           "units": 181320.393,
           "invested": 2000000,
-          "nav": 10.977,
-          "navDate": "06-Nov-2026"
+          "nav": 10.9894,
+          "navDate": "09-Nov-2026"
         },
         {
           "amfiCode": "SIF-122",
@@ -157,8 +157,8 @@
           "folio": "XXXX0085",
           "units": 90359.105,
           "invested": 1000000,
-          "nav": 10.3774,
-          "navDate": "06-Nov-2026"
+          "nav": 10.4816,
+          "navDate": "09-Nov-2026"
         }
       ]
     },
@@ -204,8 +204,8 @@
           "folio": "XXXX2974",
           "units": 76302.356,
           "invested": 1000000,
-          "nav": 12.7263,
-          "navDate": "06-Nov-2026"
+          "nav": 12.7461,
+          "navDate": "09-Nov-2026"
         },
         {
           "amfiCode": "SIF-11",
@@ -218,8 +218,8 @@
           "folio": "XXXX0894",
           "units": 181232.442,
           "invested": 2000000,
-          "nav": 10.977,
-          "navDate": "06-Nov-2026"
+          "nav": 10.9894,
+          "navDate": "09-Nov-2026"
         }
       ]
     }
