@@ -1,5 +1,5 @@
 {
-  "updatedOn": "14-Nov-2026",
+  "updatedOn": "17-Nov-2026",
   "holdings": [
     {
       "amfiCode": "SIF-7",
@@ -8,8 +8,8 @@
       "name": "qsif Hybrid Long-Short Fund",
       "plan": "Regular Plan · Growth Option",
       "units": 78325.474,
-      "nav": 12.9801,
-      "navDate": "13-Nov-2026"
+      "nav": 12.9335,
+      "navDate": "16-Nov-2026"
     },
     {
       "amfiCode": "SIF-11",
@@ -18,8 +18,8 @@
       "name": "Altiva Hybrid Long-Short Fund",
       "plan": "Regular Plan · Growth Option",
       "units": 91441.557,
-      "nav": 11.0149,
-      "navDate": "13-Nov-2026"
+      "nav": 11.0147,
+      "navDate": "16-Nov-2026"
     }
   ]
 }
